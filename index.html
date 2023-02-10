@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .wrapper {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            width: 3000px;
+            border: 2px dashed rgb(38, 175, 229);
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            font-weight: 700;
+            transition: all ease 1s;
+            cursor: pointer;
+        }   
+        .container {
+            display: flex;
+            width: 200px;
+        }
+ 
+        .line {
+            height: 1px;
+            width: 100%;
+            background-color: gray;
+            position: absolute;
+            top:50%;
+            /* border-bottom: 1px solid gray;             */
+        }
+
+        .month {
+            display: flex;
+            flex-direction: column;
+            row-gap: 20px;
+            padding-top: 10px;
+            padding-left: 40px;
+        }
+
+        .event {
+            margin: 20px;
+            padding: 3px;
+            background-color: #96DBF7;
+        }
+        .event:before {
+            content:'';
+            width:10px;
+            height:10px;
+            background: #96DBF7;
+            border-radius:50%;
+            position:absolute;
+            top:-18px;
+            left:9px;
+            z-index: 1;
+        }
+        
+        .event::after{
+            content: "";
+            position: absolute;
+            left: calc(50% - 3px);
+            background: black;
+            height: 15px;
+            width: 2px;
+            top:-15px;
+            z-index: 0;
+        }
+
+        hr {
+            height: 90px;
+        }
+        img {
+            width: 25px;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            top: -100px;
+        }
+        .button {
+            border: 0;
+            background-color: white;
+            margin-left: 10px;
+        }
+        .today {
+            background-color: aquamarine;
+            border-radius: 30%;
+            text-align: center;
+        }
+
+
+    </style>
+    <title>Document</title>
+</head>
+
+<body>
+    
+    <div class="wrapper" id ='lineTime'>
+        <div class="line"></div>
+    </div> 
+    <div class="buttons">
+        <button class="slider-next button"><</button>
+        <button class="slider-prev button">></button>
+    </div>
+
+
+
+    <script>
+
+        const months = ["January","February","March","April","May","June","July",
+            "August","September","October","November","December"]; 
+
+        const events =  [
+            {
+                "id":1,
+                "icon": "./icons/gas-station.png",
+                "date": "2022-04-24T00:00:00.000Z",
+            },
+            {
+                "id":2,
+                "icon": "./icons/gas-station.png",
+                "date": "2022-09-09T00:00:00.000Z",
+            },
+            {
+                "id":3,
+                "icon": "./icons/laptop.png",
+                "date": "2022-06-01T00:00:00.000Z",
+            },
+            {
+                "id":4,
+                "icon": "./icons/book.png",
+                "date": "2022-08-10T00:00:00.000Z",
+            },
+            {
+                "id":5,
+                "icon": "./icons/car.png",
+                "date": "2022-10-12T00:00:00.000Z",
+            },
+            {
+                "id":6,
+                "icon": "./icons/book.png",
+                "date": "2022-11-06T00:00:00.000Z",
+            },
+            {
+                "id":7,
+                "icon": "./icons/book.png",
+                "date": "2022-02-02T00:00:00.000Z",
+            }
+        ];
+        
+
+        function line(months, events) {
+            const LINE_TIME = document.getElementById('lineTime');
+            let currentMonth = 0;
+            let currentData = 0;   
+
+            // let createDiv = '';          
+                months.forEach((item) => {
+
+                    createDiv = document.createElement("div");
+                    createDiv.className='container';
+
+                     let hr = document.createElement("hr");
+
+                    createDiv.innerHTML+=`
+                        <div id =${item} class ="month">${item.toUpperCase()}</div>
+                    `;
+                    LINE_TIME.appendChild(createDiv);
+                    LINE_TIME.appendChild(hr);
+
+                    let now = new Date().getMonth();
+                    months.find(function(_,index){
+                    let indexMonth = index+1;
+                    if(now === indexMonth) {
+                        create = document.createElement("div");
+                        create.className='today';
+                        create.style.cssText=`position:absolute;top:45px;`;
+
+                        create.innerHTML+=`
+                                TODAY
+                        `;
+                    };
+                    
+                    })
+                });   
+
+            events.forEach(event => {
+                
+                currentMonth = months[new Date(event.date).getMonth()];
+                currentData = new Date(event.date).getDate();
+
+                const place = document.getElementById(currentMonth);
+
+                const img = document.createElement('img');
+                img.src = event.icon;
+
+                const div = document.createElement('div');
+                div.className = 'event';
+                div.append(img);
+
+                div.style.cssText=`position:absolute;top:45px;`;
+                place.appendChild(div);
+                place.appendChild(create);
+
+
+            });
+
+            let offset = 0;
+                document.querySelector('.slider-next').addEventListener('click',function(){
+                offset+=200;
+                if(offset > 1600) {
+                    offset = 0;
+                }
+                LINE_TIME.style.left = -offset + 'px';
+        });
+                document.querySelector('.slider-prev').addEventListener('click',function(){
+                offset-= 200;
+                if(offset < 0) {
+                    offset = 1600;
+                }
+                LINE_TIME.style.left = -offset + 'px';
+        });
+
+        }
+
+        line(months, events);
+
+    </script>
+</body>
+</html>
+
